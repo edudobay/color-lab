@@ -8,7 +8,7 @@
     "babel": "babel -d build/js web/js",
     "babel-watch": "babel --watch -d build/js web/js",
     "assets": "rsync -av --prune-empty-dirs --include '*.html' --include '*.css' --include='*/' --exclude='*' web/ build/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers js:babel-core/register"
   },
   "author": "Eduardo S. Dobay <edudobay@gmail.com>",
   "license": "ISC",

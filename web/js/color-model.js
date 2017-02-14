@@ -1,5 +1,56 @@
-export class RGB {
-	constructor(r, g, b) {
+// @flow
+
+import {checkUnitValue} from './values';
+
+export class Color {
+	color: ColorModel;
+	alpha: number;
+
+	constructor(color: ColorModel, alpha: number = 1) {
+		this.color = color;
+		this.alpha = checkUnitValue(alpha, 'alpha');
+	}
+
+	static fromRgb256(r, g, b, a) {
+		return new Color(new RGB(r / 255, g / 255, b / 255), a / 255);
+	}
+
+	static fromHex(hex, alpha = 1) {
+		return new Color(RGB.fromHex(hex), alpha);
+	}
+
+	static fromShortHex(hex, alpha = 1) {
+		return new Color(RGB.fromShortHex(hex), alpha);
+	}
+
+	rgb256(): number[] {
+		return this.color.rgb().toArray().map(v => v * 255);
+	}
+
+	rgb256int(): number[] {
+		return this.rgb256().map(v => Math.round(v));
+	}
+
+	toCssColor(): string {
+		const values = this.rgb256().concat([this.alpha]);
+		return `rgba(${values.join(',')})`
+	}
+
+	toString(): string {
+		return `Color(${this.color.toString()}, ${this.alpha})`
+	}
+}
+
+export interface ColorModel {
+	rgb(): RGB;
+}
+
+export class RGB implements ColorModel {
+	r: number;
+	g: number;
+	b: number;
+
+	constructor(r: number, g: number, b: number) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
@@ -20,13 +71,17 @@ export class RGB {
 			.reduce((acc, v) => (acc << 8) | v)
 	}
 
-	equals(other): boolean {
+	toArray(): [number, number, number] {
+		return [this.r, this.g, this.b];
+	}
+
+	equals(other: any): boolean {
 		return (this === other
 			|| (other instanceof RGB && other.r == this.r
 				&& other.g == this.g && other.b == this.b));
 	}
 
-	equalsWithinThreshold(other, threshold): boolean {
+	equalsWithinThreshold(other: RGB, threshold: number): boolean {
 		return Math.max(Math.abs(this.r - other.r), Math.abs(this.g - other.g),
 			Math.abs(this.b - other.b)) <= threshold;
 	}
@@ -54,7 +109,11 @@ export class RGB {
 }
 
 export class HSL {
-	constructor(h, s, l) {
+	h: number;
+	s: number;
+	l: number;
+
+	constructor(h: number, s: number, l: number) {
 		this.h = h;
 		this.s = s;
 		this.l = l;
@@ -64,7 +123,7 @@ export class HSL {
 		return `HSL(${this.h},${this.s},${this.l})`;
 	}
 
-	equalsWithinThreshold(other, threshold): boolean {
+	equalsWithinThreshold(other: HSL, threshold: number): boolean {
 		return Math.max(Math.abs(this.h - other.h), Math.abs(this.s - other.s),
 			Math.abs(this.l - other.l)) <= threshold;
 	}
@@ -77,6 +136,10 @@ export class HSL {
 }
 
 class HSV {
+	h: number;
+	s: number;
+	v: number;
+
 	constructor(h, s, v) {
 		this.h = h;
 		this.s = s;
@@ -94,7 +157,7 @@ class HSV {
 	hsv() { return this; }
 }
 
-function fromRgb(r, g, b, output: string): number {
+function fromRgb(r, g, b, output: string): ColorModel {
 	const maxColor = Math.max(r, g, b);
 	const minColor = Math.min(r, g, b);
 	const chroma = maxColor - minColor;

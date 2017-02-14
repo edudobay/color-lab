@@ -1,7 +1,5 @@
 const assert = require('assert');
-const colorModel = require('../build/js/color-model');
-const RGB = colorModel.RGB;
-const HSL = colorModel.HSL;
+import {Color, RGB, HSL} from '../web/js/color-model';
 
 function paddedHex(value, width) {
 	const hex = value.toString(16);
@@ -10,6 +8,22 @@ function paddedHex(value, width) {
 	else
 		return hex;
 }
+
+describe('Color', function() {
+	describe('#rgb256int()', function() {
+		const tests = [
+			{color: new Color(new RGB(1, 1, 1)), expected: [255, 255, 255]},
+			{color: new Color(new RGB(1, 0.5, 0)), expected: [255, 128, 0]},
+		];
+
+		tests.forEach(function(test) {
+			it("correctly converts " + test.color.toString() + " to " + test.expected.toString(), function() {
+				assert.deepEqual(test.color.rgb256int(), test.expected);
+			});
+		});
+
+	});
+});
 
 describe('RGB', function() {
 	describe('#fromShortHex()', function() {
