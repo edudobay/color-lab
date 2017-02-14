@@ -1,0 +1,21 @@
+{
+  "name": "color-lab",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "babel": "babel -d build/js web/js",
+    "babel-watch": "babel --watch -d build/js web/js",
+    "assets": "rsync -av --prune-empty-dirs --include '*.html' --include '*.css' --include='*/' --exclude='*' web/ build/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eduardo S. Dobay <edudobay@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "flow-bin": "^0.38.0"
+  }
+}
