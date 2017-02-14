@@ -1,4 +1,5 @@
 var path = require('path');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	entry: './web/js/main.js',
@@ -16,6 +17,14 @@ module.exports = {
 				loader: "babel-loader",
 			}
 		]
-	}
+	},
+
+	plugins: [
+		new CopyWebpackPlugin([
+			{context: 'web', from: '**/*', to: 'build/'}
+		], {
+			ignore: ['*.js']
+		})
+	]
 
 }
