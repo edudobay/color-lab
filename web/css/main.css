@@ -10,4 +10,5 @@ body {
 .color-block {
 	width: 200px;
 	height: 200px;
+	transition: background-color 0.3s;
 }
