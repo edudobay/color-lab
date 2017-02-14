@@ -1,0 +1,13 @@
+body {
+	font-family: 'Noto Serif', 'Droid Serif', serif;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.color-block {
+	width: 200px;
+	height: 200px;
+}
