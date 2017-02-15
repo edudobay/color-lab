@@ -7,6 +7,18 @@ interface ColorDisplay {
 	display(color: Color): void;
 }
 
+export class ColorMultiDisplay {
+	displays: Array<ColorDisplay>;
+
+	constructor(displays: Array<ColorDisplay>) {
+		this.displays = displays;
+	}
+
+	display(color: Color): void {
+		this.displays.forEach(display => display.display(color));
+	}
+}
+
 export class ColorComponent {
 	inputField: HTMLInputElement;
 	display: ColorDisplay;
