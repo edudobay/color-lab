@@ -128,19 +128,28 @@ export class HSL {
 			Math.abs(this.l - other.l)) <= threshold;
 	}
 
-	rgb() { throw new Error('not implemented') }
+	rgb() { return this.hsv().rgb(); }
 
 	hsl() { return this; }
 
-	hsv() { throw new Error('not implemented') }
+	hsv() {
+		if (this.l == 1) return new HSV(this.h, 0, 1);
+		else {
+			const chroma = this.s * (1 - Math.abs(2*this.l - 1));
+			const v = this.l + chroma / 2;
+			const s = (v == 0) ? 0 : chroma / v;
+			return new HSV(this.h, s, v);
+		}
+	}
+
 }
 
-class HSV {
+export class HSV {
 	h: number;
 	s: number;
 	v: number;
 
-	constructor(h, s, v) {
+	constructor(h: number, s: number, v: number) {
 		this.h = h;
 		this.s = s;
 		this.v = v;
@@ -150,9 +159,27 @@ class HSV {
 		return `HSV(${this.h},${this.s},${this.v})`;
 	}
 
-	rgb() { throw new Error('not implemented') }
+	rgb() {
+		 const chroma = this.s * this.v;
+		 const h = this.h * 6; // hue from 0 to 6
+		 const x = chroma * (1 - Math.abs((h % 2 - 1)));
+		 let r = 0, g = 0, b = 0;
+		 if      (h <= 1) [r, g] = [chroma, x]
+		 else if (h <= 2) [g, r] = [chroma, x]
+		 else if (h <= 3) [g, b] = [chroma, x]
+		 else if (h <= 4) [b, g] = [chroma, x]
+		 else if (h <= 5) [b, r] = [chroma, x]
+		 else if (h <= 6) [r, b] = [chroma, x]
+		 const m = this.v - chroma; // minimum color value
+		 return new RGB(r + m, g + m, b + m);
+	}
 
-	hsl() { throw new Error('not implemented') }
+	hsl() {
+		const chroma = this.v * this.s;
+		const l = this.v * (1 - this.s / 2);
+		const s = (l == 1) ? 0 : chroma / (1 - Math.abs(2*l - 1));
+		return new HSL(this.h, s, l);
+	}
 
 	hsv() { return this; }
 }
