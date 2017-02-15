@@ -23,6 +23,27 @@ export class Color {
 		return new Color(RGB.fromShortHex(hex), alpha);
 	}
 
+	/** blend this color over other color */
+	over(other: Color): Color {
+		const c1 = this.color.rgb();
+		const c2 = other.color.rgb();
+
+		const r = Color.colorOver(c1.r, this.alpha, c2.r, other.alpha);
+		const g = Color.colorOver(c1.g, this.alpha, c2.g, other.alpha);
+		const b = Color.colorOver(c1.b, this.alpha, c2.b, other.alpha);
+		const alpha = Color.alphaOver(this.alpha, other.alpha);
+
+		return new Color(new RGB(r, g, b), alpha);
+	}
+
+	static colorOver(va: number, aa: number, vb: number, ab: number): number {
+		return (va * aa + vb * ab * (1 - aa)) / (aa + ab * (1 - aa));
+	}
+
+	static alphaOver(alpha1: number, alpha2: number): number {
+		return alpha1 + alpha2 * (1 - alpha2);
+	}
+
 	rgb256(): number[] {
 		return this.color.rgb().toArray().map(v => v * 255);
 	}
